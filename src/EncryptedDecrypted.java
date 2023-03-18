@@ -17,11 +17,10 @@ public class EncryptedDecrypted {
         System.out.println("Введите ключ");
         int key = Integer.parseInt(console.nextLine());
 
-        System.out.println("Куда записать результат?");
-        String result = console.nextLine();
+        Path result = PathHelper.buildFileName(path, flag ? "_encrypted" : "_decrypted");
 
         try (BufferedReader reader = Files.newBufferedReader(Path.of(path));
-             BufferedWriter writer = Files.newBufferedWriter(Path.of(result))) {
+             BufferedWriter writer = Files.newBufferedWriter(result)) {
 
             while (reader.ready()) {
                 String str = reader.readLine();
@@ -30,7 +29,8 @@ public class EncryptedDecrypted {
             }
         }
 
-        System.out.println("Содержимое файла " + (flag ? "зашифровано" : "расшифровано"));
+        System.out.println("Содержимое файла " + result.getFileName() +
+                (flag ? " зашифровано" : " расшифровано") + System.lineSeparator() );
 
 
     }
