@@ -19,7 +19,7 @@ public class Menu {
             switch (answer) {
                 case "1" -> new EncryptedDecrypted().encryptedDecrypted(true);
                 case "2" -> new EncryptedDecrypted().encryptedDecrypted(false);
-                case "3" -> System.out.println("3. Подобрать ключ к зашифрованному тексту в файле ");
+                case "3" -> new Bruteforce().bruteforce();
                 case "4" -> System.out.println("4. Расшифровать текст в файле методом статического анализа ");
                 case "5" -> {
                     return;

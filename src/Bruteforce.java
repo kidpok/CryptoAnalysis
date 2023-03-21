@@ -3,6 +3,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Bruteforce {
@@ -21,17 +24,24 @@ public class Bruteforce {
              BufferedWriter writer = Files.newBufferedWriter(result)) {
 
             StringBuilder builder = new StringBuilder();
-
+            List<String> list = new ArrayList<>();
             while (reader.ready()) {
                 String str = reader.readLine();
+                list.add(str);
                 builder.append(str).append(System.lineSeparator());
             }
             for (int i = 0; i < caesarCipher.alphabetLength(); i++) {
                 String decrypt = caesarCipher.decrypt(builder.toString(), i);
 
-          if (isValidateText(decrypt)){
-              //дз что делать если он вернул тру
-          }
+                if (isValidateText(decrypt)) {
+                    for (String string : list) {
+                        String encrypt = caesarCipher.decrypt(string, i);
+                        writer.write(encrypt + System.lineSeparator());
+                    }
+                    System.out.println("Содержимое было расшифровано. Ключ расшифровки К = " + i );
+                    break;
+                }
+
             }
         }
     }
@@ -49,8 +59,9 @@ public class Bruteforce {
             isValidate = true;
         }
         while (isValidate) {
-            //дз сократить текст чтобы выводилась не вся книга
-            System.out.println(text);
+            System.out.println(text.substring(0, Math.min(text.length(), 1000)));
+            // int indexStart = new Random().nextInt(text.length() / 2); // так тоже можно
+            // System.out.println(text.substring(indexStart, indexStart + (int) Math.sqrt(text.length())));
             System.out.println("Понятен ли этот текст? Y / N");
             String answer = console.nextLine();
             if (answer.equalsIgnoreCase("Y")) {
