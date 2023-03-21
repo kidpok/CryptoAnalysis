@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -20,30 +21,38 @@ public class Bruteforce {
 
         Path result = PathHelper.buildFileName(path, "_bruteforce");
 
-        try (BufferedReader reader = Files.newBufferedReader(Path.of(path));
-             BufferedWriter writer = Files.newBufferedWriter(result)) {
+//        try (BufferedReader reader = Files.newBufferedReader(Path.of(path));
+//             BufferedWriter writer = Files.newBufferedWriter(result)) {
+            String content = Files.readString(Path.of(path));
 
-            StringBuilder builder = new StringBuilder();
-            List<String> list = new ArrayList<>();
-            while (reader.ready()) {
-                String str = reader.readLine();
-                list.add(str);
-                builder.append(str).append(System.lineSeparator());
-            }
+//           StringBuilder builder = new StringBuilder();
+//            List<String> list = new ArrayList<>();
+//            while (reader.ready()) {
+//                String str = reader.readLine();
+//                list.add(str);
+//                builder.append(str).append(System.lineSeparator());
+//            }
             for (int i = 0; i < caesarCipher.alphabetLength(); i++) {
-                String decrypt = caesarCipher.decrypt(builder.toString(), i);
-
+//              String decrypt = caesarCipher.decrypt(builder.toString(), i);
+                String decrypt = caesarCipher.decrypt(content, i);
                 if (isValidateText(decrypt)) {
-                    for (String string : list) {
-                        String encrypt = caesarCipher.decrypt(string, i);
-                        writer.write(encrypt + System.lineSeparator());
-                    }
-                    System.out.println("Содержимое было расшифровано. Ключ расшифровки К = " + i );
+                    Files.writeString(result, decrypt);
+                    System.out.println("Содержимое было расшифровано. Ключ расшифровки К = " + i);
                     break;
                 }
 
+
+//                if (isValidateText(decrypt)) {
+//                    for (String string : list) {
+//                        String encrypt = caesarCipher.decrypt(string, i);
+//                        writer.write(encrypt + System.lineSeparator());
+//                    }
+//                    System.out.println("Содержимое было расшифровано. Ключ расшифровки К = " + i);
+//                    break;
+//                }
+
             }
-        }
+//        }
     }
 
     private boolean isValidateText(String text) {
