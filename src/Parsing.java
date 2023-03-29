@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,21 +10,40 @@ public class Parsing {
     private final Scanner console = new Scanner(System.in);
     private final Map<Character, Integer> encrypted = new HashMap<>();
     private final Map<Character, Integer> statistic = new HashMap<>();
+    private final Map<Character, Character> decrypted = new HashMap<>();
+
 
     public void pars() throws IOException {
         System.out.println("Введите путь к файлу для его расшифровки");
         String pathEncrypted = console.nextLine();
         System.out.println("Введите путь к файлу для набора статистики");
         String pathStatistic = console.nextLine();
+        Path path = PathHelper.buildFileName(pathEncrypted, "_parsing");
 
-        fillMapValues(encrypted, pathEncrypted);
-        fillMapValues(statistic, pathStatistic);
+        List<Map.Entry<Character, Integer>> listEncrypted = mapToList(fillMapValues(encrypted, pathEncrypted));
+        List<Map.Entry<Character, Integer>> listStatistic = mapToList(fillMapValues(statistic, pathStatistic));
 
-        Set<Character> characters = encrypted.keySet();
-        Collection<Integer> values = encrypted.values();
-        Set<Map.Entry<Character, Integer>> entries = encrypted.entrySet();
+        if (listEncrypted.size() <= listStatistic.size()) {
+            for (int i = 0; i < listEncrypted.size(); i++) {
+                decrypted.put(listEncrypted.get(i).getKey(), listStatistic.get(i).getKey());
+            }
+        } else {
+            System.out.println("Размер файла статистики недостаточен, необходим файл большей длины, чем зашифрованный");
+        }
 
-
+        try (BufferedReader reader = Files.newBufferedReader(Path.of(pathEncrypted));
+             BufferedWriter writer = Files.newBufferedWriter(path)) {
+            while (reader.ready()) {
+                StringBuilder builder = new StringBuilder();
+                String string = reader.readLine();
+                for (char encryptedChar : string.toCharArray()) {
+                    Character decryptedChar = decrypted.get(encryptedChar);
+                    builder.append(decryptedChar);
+                }
+                writer.write(builder + System.lineSeparator());
+            }
+        }
+        System.out.println("Содержимое файла расшифровано");
     }
 
 
@@ -46,13 +66,12 @@ public class Parsing {
         return map;
     }
 
-    public static void main(String[] args) {
-        List<Integer> list = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
-            list.add(new Random().nextInt(100));
-        }
-        System.out.println(list);
-        Collections.sort(list);
-        System.out.println(list);
+    private List<Map.Entry<Character, Integer>> mapToList(Map<Character, Integer> map) {
+        Set<Map.Entry<Character, Integer>> entries = map.entrySet();
+        List<Map.Entry<Character, Integer>> list = new ArrayList<>(entries);
+        list.sort((o1, o2) -> o2.getValue() - o1.getValue());
+        return list;
+
     }
+
 }
