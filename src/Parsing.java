@@ -52,7 +52,7 @@ public class Parsing {
             StringBuilder builder = new StringBuilder();
 
             while (reader.ready()) {
-                String str = console.nextLine();
+                String str = reader.readLine();
                 builder.append(str);
             }
             for (char aChar : builder.toString().toCharArray()) {

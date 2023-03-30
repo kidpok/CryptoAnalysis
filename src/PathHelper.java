@@ -1,4 +1,8 @@
+import javax.xml.crypto.Data;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 
 public class PathHelper {
@@ -14,9 +18,9 @@ public class PathHelper {
         String newFileName;
         if (fileName.contains(".")) {
             int index = fileName.lastIndexOf(".");
-            newFileName = fileName.substring(0, index) + suffix + fileName.substring(index);
+            newFileName = fileName.substring(0, index) + suffix + LocalDateTime.now() + fileName.substring(index);
         } else {
-            newFileName = fileName + suffix;
+            newFileName = fileName + suffix ;
         }
 
         return directory.resolve(Path.of(newFileName));
